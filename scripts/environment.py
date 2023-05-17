@@ -31,6 +31,7 @@ class Environment(pygame.sprite.Sprite):
         self.map.blit(self.image, self.rect)
         self.robots = []
         self.boxes = []
+        self.path = []
 
     def addRobot(self, position, imagePath):
         self.robots.append(Robot(position, imagePath))
@@ -87,7 +88,7 @@ class Environment(pygame.sprite.Sprite):
         self.refresh()
         return terminating
     
-    def setManualPose(self, pose):
+    def setManualPose(self, pose, box_pose,angle):
         counter = 0
         for robot in self.robots:
             try:
@@ -95,5 +96,12 @@ class Environment(pygame.sprite.Sprite):
             except:
                 pass
             counter += 1
+
+        for box in self.boxes:
+            try:
+                box.setPose(box_pose[0], box_pose[1], angle)
+            except:
+                pass
+
         pygame.display.update()
         self.refresh()
