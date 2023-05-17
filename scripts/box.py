@@ -21,4 +21,16 @@ class Box(pygame.sprite.Sprite):
         self.y = Y
         self.theta = Theta
         self.rotated = pygame.transform.rotozoom(self.image, math.degrees(self.theta), 1)
+
+    def move_box_to_position(self, target):
+        if self.x < target[0]:
+            self.x += 1
+        elif self.x > target[0]:
+            self.x -= 1
+
+        if self.y < target[1]:  
+            self.y += 1
+        elif self.y > target[1]:
+            self.y -= 1
+            
         self.rect = self.rotated.get_rect(center = (self.x, self.y))
