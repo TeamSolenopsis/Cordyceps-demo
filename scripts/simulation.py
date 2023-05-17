@@ -51,6 +51,10 @@ if __name__ == "__main__":
 
         for i in Poses:
             env.setManualPose(i)
+
+        for i in np.flip(Poses, 0):
+            env.setManualPose(i)
+            
         r += 50
         if r == 1000:
             running = False
