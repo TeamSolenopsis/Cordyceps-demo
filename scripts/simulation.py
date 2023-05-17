@@ -12,16 +12,19 @@ metersToPixels = 3779.52
 robotwidthPixels = 50
 robotWidth = robotwidthPixels / metersToPixels
 R = robotWidth
+env_width = 1920
+env_height = 1080
 
 def Position(x, y):
-    xOffset = 960
-    yOffset = 540
+    xOffset = env_width / 2
+    yOffset = env_height/ 2
     return (x + xOffset, y + yOffset)
 
 def InitEnv():
     pygame.init()
-    dims = (1080, 1920)
-    env = Environment(dims, 'images\demo_warehouse_2d.jpg')
+    dims = (env_height, env_width)
+    env = Environment(dims, 'images/demo_warehouse_2d.jpg')
+
     return env
 
 def FourRobotsEnv():
@@ -38,7 +41,7 @@ def FourRobotsEnv():
 
 
 if __name__ == "__main__":
-    r = 300
+    r = 0
     load = True
     running, env = FourRobotsEnv()    
 
@@ -68,6 +71,12 @@ if __name__ == "__main__":
             if result == True:
                 unload = False
 
+        for i in Poses:
+            env.setManualPose(i)
+
+        for i in np.flip(Poses, 0):
+            env.setManualPose(i)
+
         r += 50
-        if r == 500:
+        if r == 1000:
             running = False

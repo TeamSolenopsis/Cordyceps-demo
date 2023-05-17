@@ -1,29 +1,81 @@
 import numpy as np
+import matplotlib.pyplot as plt
 
 
 def Controller():
-    RESOLUTION = 1000  # The amount of points in which the paths will be split.
+    RESOLUTION = 500  # The amount of points in which the paths will be split.
     MAX_SPEED = 20  # Maximum allowed speed from a robot.
     
     
+    # r = 200
+    # i = np.linspace(0.0,2*np.pi,RESOLUTION)
+    # x = np.cos(i)*r
+    # y = np.sin(i)*r
+
+    vs_origin_x = 400 / 2  # pixels
+    vs_origin_y = (920) / 2 # pixels
+
+    x = [vs_origin_x]
+    y = [vs_origin_y]
+
+    # up
+    x = np.append(x, np.linspace(x[-1], x[-1], RESOLUTION))
+    y = np.append(y, np.linspace(y[-1],y[-1] - (180 ) , RESOLUTION))
+
+    # turn right
     r = 200
-    i = np.linspace(0.0,2*np.pi,RESOLUTION)
-    x = np.cos(i)*r
-    y = np.sin(i)*r
+    i = np.linspace(1.0*np.pi, 1.5*np.pi, RESOLUTION * 2)
+    x = np.append(x, (x[-1] + r) + np.cos(i)*r)
+    y = np.append(y, (y[-1]) + np.sin(i)*r)
 
-    # x = np.linspace(0.0,1000,RESOLUTION)
-    # y = np.zeros(RESOLUTION)
-    
-    # i = np.linspace(0.0,1000,RESOLUTION)
-    # x = -i
-    # y = np.cos(i/50)*50
+    # path right
+    x = np.append(x, np.linspace(x[-1], x[-1] + 730, int(RESOLUTION * 3.5)))
+    y = np.append(y, np.linspace(y[-1], y[-1], int(RESOLUTION *3.5)))
 
-    # i = np.linspace(0.0,1000,RESOLUTION)
-    # x = -i
-    # y = np.sin(i/50)*50
+    # turn left
+    r = 200
+    i = np.linspace(0.0, 0.5*np.pi, RESOLUTION * 2)
+    x = np.append(x, (x[-1]) + np.flip(np.cos(i)*r))
+    y = np.append(y, (y[-1]- r) + np.flip(np.sin(i)*r))
 
-    vs_origin_x = 1150  # pixels
-    vs_origin_y = 540  # pixels
+
+    # path up
+    x = np.append(x, np.linspace(x[-1], x[-1], RESOLUTION))
+    y = np.append(y, np.linspace(y[-1],y[-1] - 180 ,RESOLUTION))
+   
+    # # path right
+    # x = np.append(x, np.linspace(x[-1], x[-1] + 100, RESOLUTION))
+    # y = np.append(y, np.linspace(y[-1], y[-1], RESOLUTION))
+
+    # # path left
+    # x = np.append(x, np.linspace(x[-1], x[-1] - 100,RESOLUTION))
+    # y = np.append(y, np.linspace(y[-1], y[-1], RESOLUTION))
+
+    # # path up
+    # x = np.append(x, np.linspace(x[-1], x[-1], RESOLUTION))
+    # y = np.append(y, np.linspace(y[-1],y[-1] - 100 ,RESOLUTION))
+
+    # # path down
+    # x = np.append(x, np.linspace(x[-1], x[-1], RESOLUTION))
+    # y = np.append(y, np.linspace(y[-1], y[-1] + 100, RESOLUTION))
+
+    # # rotate CW
+    # r = 200
+    # i = np.linspace(0.0, 2*np.pi, RESOLUTION * 4)
+    # x = np.append(x, (x[-1] - r) + np.cos(i)*r)
+    # y = np.append(y, (y[-1]) + np.sin(i)*r)
+
+    # # rotate CCW
+    # r = 200
+    # i = np.linspace(0.0, 2*np.pi, RESOLUTION * 4)
+    # x = np.append(x, (x[-1] - r) + np.flip(np.cos(i)*r))
+    # y = np.append(y, (y[-1]) + np.flip(np.sin(i)*r))
+
+    # plt.scatter(x, y, s=3)
+    # plt.xticks(np.linspace(0, 1000, 10))
+    # plt.yticks(np.linspace(0, 1000, 10))
+    # plt.show()
+
     angle = 0.0  # rad
     angle_list = []
 
@@ -39,10 +91,10 @@ def Controller():
     x   cos(θ) -sin(θ)  dX x
     y   sin(θ) cos(θ)   dY y
     1   0      0        1  1 
-    """
+    """   
 
     path = []  # Path
-    for i in range(RESOLUTION - 1):
+    for i in range(len(x) - 1):
         # mag_vel = np.sqrt(np.square(x[i+1]-x[i]) + np.square(y[i+1]-y[i]))
         x_goal = x[i + 1] - x[i]
         y_goal = y[i + 1] - y[i]

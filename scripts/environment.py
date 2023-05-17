@@ -4,9 +4,10 @@ import numpy as np
 from constants import *
 from box import Box
 from robot import Robot
+import controller
 
 class Environment(pygame.sprite.Sprite):
-    def __init__(self, dimentions, mapImg):
+    def __init__(self, dimensions, mapImg):
         pygame.sprite.Sprite.__init__(self)
         self.black = (0,0,0)
         self.white = (255,255,255)
@@ -14,8 +15,8 @@ class Environment(pygame.sprite.Sprite):
         self.blue = (0,0,255)
         self.red = (255,0,0)
         self.yellow = (255,255,0)
-        self.height = dimentions[0]
-        self.width = dimentions[1]
+        self.height = dimensions[0]
+        self.width = dimensions[1]
         pygame.display.set_caption("env")
         self.map = pygame.display.set_mode((self.width, self.height))
 
@@ -41,6 +42,7 @@ class Environment(pygame.sprite.Sprite):
 
 
     def refresh(self):
+        pygame.event.get()
         self.map.blit(self.image, self.rect)
         for robot in self.robots:
             robot.draw(self)
@@ -65,7 +67,6 @@ class Environment(pygame.sprite.Sprite):
             self.refresh()
             pygame.display.update()
         return result
-
 
     def checkCollision(self):
         collisionrects = []
