@@ -2,6 +2,7 @@ import pygame
 import math
 import numpy as np
 from constants import *
+from box import Box
 from robot import Robot
 
 class Environment(pygame.sprite.Sprite):
@@ -29,9 +30,15 @@ class Environment(pygame.sprite.Sprite):
 
         self.map.blit(self.image, self.rect)
         self.robots = []
+        self.boxes = []
+        self.path = []
 
     def addRobot(self, position, imagePath):
         self.robots.append(Robot(position, imagePath))
+
+    def addBox(self, position, imagePath):
+        self.boxes.append(Box(position, imagePath))
+
 
     def refresh(self):
         self.map.blit(self.image, self.rect)
@@ -42,16 +49,22 @@ class Environment(pygame.sprite.Sprite):
         for robot in self.robots:
             robot.drawRays(self)
 
+        for box in self.boxes:
+            box.draw(self)
+
         ## Lines
             pygame.draw.line(self.map, self.red, (self.robots[0].x,self.robots[0].y), (self.robots[1].x,self.robots[1].y))
             pygame.draw.line(self.map, self.red, (self.robots[1].x,self.robots[1].y), (self.robots[2].x,self.robots[2].y))
             pygame.draw.line(self.map, self.red, (self.robots[2].x,self.robots[2].y), (self.robots[3].x,self.robots[3].y))
             pygame.draw.line(self.map, self.red, (self.robots[0].x,self.robots[0].y), (self.robots[3].x,self.robots[3].y))
 
-        
-
-
-
+    def move_box(self, target):
+        result = False
+        while result != True:
+            result = self.boxes[0].move_box_to_position(target)
+            self.refresh()
+            pygame.display.update()
+        return result
 
 
     def checkCollision(self):
@@ -79,7 +92,7 @@ class Environment(pygame.sprite.Sprite):
         self.refresh()
         return terminating
     
-    def setManualPose(self, pose):
+    def setManualPose(self, pose, box_pose,angle):
         counter = 0
         for robot in self.robots:
             try:
@@ -87,5 +100,12 @@ class Environment(pygame.sprite.Sprite):
             except:
                 pass
             counter += 1
+
+        for box in self.boxes:
+            try:
+                box.setPose(box_pose[0], box_pose[1], angle)
+            except:
+                pass
+
         pygame.display.update()
         self.refresh()

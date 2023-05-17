@@ -10,6 +10,9 @@ def Controller():
     i = np.linspace(0.0,2*np.pi,RESOLUTION)
     x = np.cos(i)*r
     y = np.sin(i)*r
+
+    # x = np.linspace(0.0,1000,RESOLUTION)
+    # y = np.zeros(RESOLUTION)
     
     # i = np.linspace(0.0,1000,RESOLUTION)
     # x = -i
@@ -22,6 +25,14 @@ def Controller():
     vs_origin_x = 1150  # pixels
     vs_origin_y = 540  # pixels
     angle = 0.0  # rad
+    angle_list = []
+
+    vs_path = list(zip(x, y))  # Path of the VS.
+    vs_angles = []  # Angles of the VS.
+    for pose, next_pose in zip(vs_path, vs_path[1:]):
+        dx = next_pose[0] - pose[0]
+        dy = next_pose[1] - pose[1]
+        vs_angles.append(-np.arctan2(dy, dx))
 
     """
     Transformation matrix for x y components:
@@ -77,6 +88,9 @@ def Controller():
 
     # Calculating the deltas for every individual robot (the x and y delta, also the theta).
     for vs_pose_id, vs_pose in enumerate(path):
+
+        x_delta = 0
+
         for bot_pose_id, bot_pose in enumerate(vs_pose):
             try:
                 yy = path[vs_pose_id + 1][bot_pose_id][1] - bot_pose[1]
@@ -102,4 +116,4 @@ def Controller():
 
             bot_pose[2] = alpha
             
-    return path
+    return path, x, y, vs_angles
