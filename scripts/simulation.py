@@ -14,6 +14,7 @@ robotWidth = robotwidthPixels / metersToPixels
 R = robotWidth
 env_width = 1920
 env_height = 1080
+
 vs_origin_x = -580
 vs_origin_y = 390
 
@@ -77,13 +78,6 @@ def main():
     # some trickery to make the robots drive back to their original positions
     # ================================================================
     flipped_Poses = np.flip(Poses, 0)
-
-    for poses in flipped_Poses:
-        for robot_pose in poses:
-            robot_pose[0] = -robot_pose[0]
-            robot_pose[1] = -robot_pose[1]
-            robot_pose[2] = -robot_pose[2]
-            robot_pose[3] = -robot_pose[3]
 
     offset_robot_0 = 600
     offset_robot_1 = 500
