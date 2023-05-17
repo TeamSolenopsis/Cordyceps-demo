@@ -32,7 +32,7 @@ def FourRobotsEnv():
     
     env.addRobot(Position(-50,-50), robotImage)
     env.addRobot(Position(50,-50), robotImage)
-    env.addBox(Position(100,100), 'images/box_1.png')
+    env.addBox(Position(0,0), 'images/box_1.png')
     running = True
     return running, env
 
@@ -43,13 +43,13 @@ if __name__ == "__main__":
     running, env = FourRobotsEnv()    
 
     while running:
-        Poses = Controller()
+        Poses,x,y,angle= Controller()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
 
-        for i in Poses:
-            env.setManualPose(i)
+        for i,Pose in enumerate(Poses):
+            env.setManualPose(Pose,Position(x[i] + 190,y[i]),angle[i])
         r += 50
         if r == 500:
             running = False

@@ -10,6 +10,9 @@ def Controller():
     i = np.linspace(0.0,2*np.pi,RESOLUTION)
     x = np.cos(i)*r
     y = np.sin(i)*r
+
+    # x = np.linspace(0.0,1000,RESOLUTION)
+    # y = np.zeros(RESOLUTION)
     
     # i = np.linspace(0.0,1000,RESOLUTION)
     # x = -i
@@ -22,6 +25,7 @@ def Controller():
     vs_origin_x = 1150  # pixels
     vs_origin_y = 540  # pixels
     angle = 0.0  # rad
+    angle_list = []
 
     """
     Transformation matrix for x y components:
@@ -102,4 +106,4 @@ def Controller():
 
             bot_pose[2] = alpha
             
-    return path
+    return path, x, y, angle_list
