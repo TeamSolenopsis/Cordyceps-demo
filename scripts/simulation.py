@@ -65,6 +65,8 @@ if __name__ == "__main__":
         if unload == True:
             target = Position(1000, -380)
             result = env.move_box(target)
+            if result == True:
+                unload = False
 
         r += 50
         if r == 500:
