@@ -2,15 +2,24 @@ import numpy as np
 
 
 def Controller():
-    RESOLUTION = 1000  # The amount of points in which the paths will be split.
+    RESOLUTION = 100  # The amount of points in which the paths will be split.
     MAX_SPEED = 20  # Maximum allowed speed from a robot.
     
     
-    r = 200
-    i = np.linspace(0.0,2*np.pi,RESOLUTION)
-    x = np.cos(i)*r
-    y = np.sin(i)*r
-    
+    # r = 200
+    # i = np.linspace(0.0,2*np.pi,RESOLUTION)
+    # x = np.cos(i)*r
+    # y = np.sin(i)*r
+
+    # path right
+    x = np.linspace(0.0,100,RESOLUTION)
+    y = np.zeros(RESOLUTION)
+
+    # path down
+    y = np.append(y, np.linspace(0.0,100,RESOLUTION))
+    x = np.append(x, np.linspace(x[-1], x[-1], RESOLUTION))
+    print(x)
+
     # i = np.linspace(0.0,1000,RESOLUTION)
     # x = -i
     # y = np.cos(i/50)*50
@@ -31,7 +40,7 @@ def Controller():
     """
 
     path = []  # Path
-    for i in range(RESOLUTION - 1):
+    for i in range(len(x) - 1):
         # mag_vel = np.sqrt(np.square(x[i+1]-x[i]) + np.square(y[i+1]-y[i]))
         x_goal = x[i + 1] - x[i]
         y_goal = y[i + 1] - y[i]

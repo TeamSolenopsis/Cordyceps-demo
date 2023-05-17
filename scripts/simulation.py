@@ -37,7 +37,7 @@ def FourRobotsEnv():
 
 
 if __name__ == "__main__":
-    r = 300
+    r = 0
     
     running, env = FourRobotsEnv()    
 
@@ -50,5 +50,5 @@ if __name__ == "__main__":
         for i in Poses:
             env.setManualPose(i)
         r += 50
-        if r == 500:
+        if r == 1000:
             running = False
