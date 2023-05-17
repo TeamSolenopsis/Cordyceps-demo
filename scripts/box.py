@@ -8,7 +8,7 @@ class Box(pygame.sprite.Sprite):
                 self.y = startPose[1]
                 self.theta = 0
                 self.image = pygame.image.load(imagePath)
-                self.image = pygame.transform.scale(self.image, (100,100))
+                self.image = pygame.transform.scale(self.image, (110,110))
                 self.rect = self.image.get_rect()
                 self.rotated = self.image
                 self.rect = self.rotated.get_rect(center = (self.x, self.y))
