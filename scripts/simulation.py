@@ -12,16 +12,18 @@ metersToPixels = 3779.52
 robotwidthPixels = 50
 robotWidth = robotwidthPixels / metersToPixels
 R = robotWidth
+env_width = 1920
+env_height = 1080
 
 def Position(x, y):
-    xOffset = 960
-    yOffset = 540
+    xOffset = env_width / 2
+    yOffset = env_height/ 2
     return (x + xOffset, y + yOffset)
 
 def InitEnv():
     pygame.init()
-    dims = (1080, 1920)
-    env = Environment(dims, 'images/gradient_background.jpeg')
+    dims = (env_height, env_width)
+    env = Environment(dims, 'images/demo_warehouse.jpg')
     return env
 
 def FourRobotsEnv():
