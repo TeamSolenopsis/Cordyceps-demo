@@ -55,10 +55,10 @@ class Environment(pygame.sprite.Sprite):
             box.draw(self)
 
         ## Lines
-            pygame.draw.line(self.map, self.red, (self.robots[0].x,self.robots[0].y), (self.robots[1].x,self.robots[1].y))
-            pygame.draw.line(self.map, self.red, (self.robots[1].x,self.robots[1].y), (self.robots[2].x,self.robots[2].y))
-            pygame.draw.line(self.map, self.red, (self.robots[2].x,self.robots[2].y), (self.robots[3].x,self.robots[3].y))
-            pygame.draw.line(self.map, self.red, (self.robots[0].x,self.robots[0].y), (self.robots[3].x,self.robots[3].y))
+            # pygame.draw.line(self.map, self.red, (self.robots[0].x,self.robots[0].y), (self.robots[1].x,self.robots[1].y))
+            # pygame.draw.line(self.map, self.red, (self.robots[1].x,self.robots[1].y), (self.robots[2].x,self.robots[2].y))
+            # pygame.draw.line(self.map, self.red, (self.robots[2].x,self.robots[2].y), (self.robots[3].x,self.robots[3].y))
+            # pygame.draw.line(self.map, self.red, (self.robots[0].x,self.robots[0].y), (self.robots[3].x,self.robots[3].y))
 
     def move_box(self, target):
         result = False
@@ -119,6 +119,13 @@ class Environment(pygame.sprite.Sprite):
             except:
                 pass
             counter += 1
+
+        pygame.display.update()
+        self.refresh()
+
+    def setManualPose_robot_individual(self, pose, robot_index):
+        
+        self.robots[robot_index].setPose(pose[robot_index][0], pose[robot_index][1], pose[robot_index][2])
 
         pygame.display.update()
         self.refresh()
