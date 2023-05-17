@@ -63,17 +63,7 @@ def Controller():
     # r = 200
     # i = np.linspace(0.0, 2*np.pi, RESOLUTION * 4)
     # x = np.append(x, (x[-1] - r) + np.cos(i)*r)
-    # y = np.append(y, (y[-1]) + np.sin(i)*r)
-
-    # # rotate CCW
-    # r = 200
-    # i = np.linspace(0.0, 2*np.pi, RESOLUTION * 4)
-    # x = np.append(x, (x[-1] - r) + np.flip(np.cos(i)*r))
-    # y = np.append(y, (y[-1]) + np.flip(np.sin(i)*r))
-
-    # plt.scatter(x, y, s=3)
-    # plt.xticks(np.linspace(0, 1000, 10))
-    # plt.yticks(np.linspace(0, 1000, 10))
+    # y = np.append(y, (y[-1]) + np.sin(i)*r))
     # plt.show()
 
     angle = 0.0  # rad
@@ -168,4 +158,4 @@ def Controller():
 
             bot_pose[2] = alpha
             
-    return path, x, y, vs_angles
+    return path, x, y, vs_angles, vs_origin_x, vs_origin_y
