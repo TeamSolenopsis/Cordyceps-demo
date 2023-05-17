@@ -2,6 +2,7 @@ import pygame
 import math
 import numpy as np
 from constants import *
+from box import Box
 from robot import Robot
 
 class Environment(pygame.sprite.Sprite):
@@ -29,9 +30,14 @@ class Environment(pygame.sprite.Sprite):
 
         self.map.blit(self.image, self.rect)
         self.robots = []
+        self.boxes = []
 
     def addRobot(self, position, imagePath):
         self.robots.append(Robot(position, imagePath))
+
+    def addBox(self, position, imagePath):
+        self.boxes.append(Box(position, imagePath))
+
 
     def refresh(self):
         self.map.blit(self.image, self.rect)
@@ -41,6 +47,9 @@ class Environment(pygame.sprite.Sprite):
             robot.scan(self)
         for robot in self.robots:
             robot.drawRays(self)
+
+        for box in self.boxes:
+            box.draw(self)
 
         ## Lines
             pygame.draw.line(self.map, self.red, (self.robots[0].x,self.robots[0].y), (self.robots[1].x,self.robots[1].y))

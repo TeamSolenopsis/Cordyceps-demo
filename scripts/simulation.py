@@ -32,6 +32,7 @@ def FourRobotsEnv():
     
     env.addRobot(Position(-50,-50), robotImage)
     env.addRobot(Position(50,-50), robotImage)
+    env.addBox(Position(100,100), 'images/box_1.png')
     running = True
     return running, env
 
