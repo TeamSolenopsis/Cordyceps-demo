@@ -34,3 +34,6 @@ class Box(pygame.sprite.Sprite):
             self.y -= 1
             
         self.rect = self.rotated.get_rect(center = (self.x, self.y))
+
+        if self.x == target[0] and self.y == target[1]:
+            return True

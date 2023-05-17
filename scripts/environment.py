@@ -59,8 +59,12 @@ class Environment(pygame.sprite.Sprite):
             pygame.draw.line(self.map, self.red, (self.robots[0].x,self.robots[0].y), (self.robots[3].x,self.robots[3].y))
 
     def move_box(self, target):
-        self.boxes[0].move_box_to_position(target)
-        self.refresh()
+        result = False
+        while result != True:
+            result = self.boxes[0].move_box_to_position(target)
+            self.refresh()
+            pygame.display.update()
+        return result
 
 
     def checkCollision(self):
