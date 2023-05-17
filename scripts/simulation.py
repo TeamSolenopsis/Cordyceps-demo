@@ -14,6 +14,9 @@ robotWidth = robotwidthPixels / metersToPixels
 R = robotWidth
 env_width = 1920
 env_height = 1080
+vs_origin_x = -580
+vs_origin_y = 380
+
 
 def Position(x, y):
     xOffset = env_width / 2
@@ -30,53 +33,57 @@ def InitEnv():
 def FourRobotsEnv():
     env = InitEnv()
 
-    env.addRobot(Position(50,50), robotImage)
-    env.addRobot(Position(-50,50), robotImage)
+    env.addRobot(Position(vs_origin_x + 50, vs_origin_y + 50), robotImage)
+    env.addRobot(Position(vs_origin_x - 50, vs_origin_y + 50), robotImage)
     
-    env.addRobot(Position(-50,-50), robotImage)
-    env.addRobot(Position(50,-50), robotImage)
-    env.addBox(Position(-1000,380), 'images/box_1.png')
-    running = True
-    return running, env
+    env.addRobot(Position(vs_origin_x - 50, vs_origin_y - 50), robotImage)
+    env.addRobot(Position(vs_origin_x + 50, vs_origin_y - 50), robotImage)
+
+    env.addBox(Position(-1000,vs_origin_y), 'images/box_1.png')
+
+    return env
 
 
-if __name__ == "__main__":
+def main():
     r = 0
     load = True
-    running, env = FourRobotsEnv()    
+    running = True
+    vs_origin_x = -580
+    vs_origin_y = 380
+    env = FourRobotsEnv()      
+  
 
-    while running:
-        if load == True:
-            target = Position(-600, 380)
-            result = env.move_box(target)
+    if load == True:
+        target = Position(vs_origin_x, vs_origin_y)
+        result = env.move_box(target)
 
+    if result == True:
+        load = False
+
+        Poses, x, y, angle, vs_origin_x, vs_origin_y = Controller()  
+        for i,Pose in enumerate(Poses):
+            env.setManualPose(Pose, (x[i] + vs_origin_x, y[i] + vs_origin_y), angle[i])
+
+        unload = True
+        result = False
+    
+    if unload == True:
+        target = Position(1200, -380)
+        result = env.move_box(target)
 
         if result == True:
-            load = False
-            Poses,x,y,angle= Controller()
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    running = False
+            unload = False
 
-
-            for i,Pose in enumerate(Poses):
-                env.setManualPose(Pose,Position(x[i] + 190,y[i]),angle[i])
-
-            unload = True
-            result = False
+    for i in np.flip(Poses, 0):
+        env.setManualPose_robot(i)
         
-        if unload == True:
-            target = Position(1000, -380)
-            result = env.move_box(target)
-            if result == True:
-                unload = False
+    time.sleep(5)
 
-        for i in Poses:
-            env.setManualPose(i)
-
-        for i in np.flip(Poses, 0):
-            env.setManualPose(i)
-
-        r += 50
-        if r == 1000:
-            running = False
+if __name__ == "__main__":
+    running = True
+    while (running):
+        main()
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+        

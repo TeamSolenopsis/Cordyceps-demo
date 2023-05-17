@@ -93,7 +93,7 @@ class Environment(pygame.sprite.Sprite):
         self.refresh()
         return terminating
     
-    def setManualPose(self, pose, box_pose,angle):
+    def setManualPose(self, pose, box_pose, angle):
         counter = 0
         for robot in self.robots:
             try:
@@ -107,6 +107,18 @@ class Environment(pygame.sprite.Sprite):
                 box.setPose(box_pose[0], box_pose[1], angle)
             except:
                 pass
+
+        pygame.display.update()
+        self.refresh()
+
+    def setManualPose_robot(self, pose):
+        counter = 0
+        for robot in self.robots:
+            try:
+                robot.setPose(pose[counter][0], pose[counter][1], pose[counter][2])
+            except:
+                pass
+            counter += 1
 
         pygame.display.update()
         self.refresh()
