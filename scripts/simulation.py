@@ -15,7 +15,7 @@ R = robotWidth
 env_width = 1920
 env_height = 1080
 vs_origin_x = -580
-vs_origin_y = 380
+vs_origin_y = 390
 
 
 def Position(x, y):
@@ -49,7 +49,7 @@ def main():
     load = True
     running = True
     vs_origin_x = -580
-    vs_origin_y = 380
+    vs_origin_y = 390
     env = FourRobotsEnv()      
   
 
@@ -68,7 +68,7 @@ def main():
         result = False
     
     if unload == True:
-        target = Position(1200, -380)
+        target = Position(1200, -390)
         result = env.move_box(target)
 
         if result == True:
@@ -77,7 +77,7 @@ def main():
     for i in np.flip(Poses, 0):
         env.setManualPose_robot(i)
         
-    time.sleep(5)
+    time.sleep(2)
 
 if __name__ == "__main__":
     running = True
