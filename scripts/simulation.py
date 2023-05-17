@@ -45,9 +45,7 @@ def FourRobotsEnv():
 
 
 def main():
-    r = 0
     load = True
-    running = True
     vs_origin_x = -580
     vs_origin_y = 390
     env = FourRobotsEnv()      
