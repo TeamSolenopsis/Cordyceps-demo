@@ -2,10 +2,12 @@ import pygame
 import math
 import numpy as np
 from constants import *
+from box import Box
 from robot import Robot
+import controller
 
 class Environment(pygame.sprite.Sprite):
-    def __init__(self, dimentions, mapImg):
+    def __init__(self, dimensions, mapImg):
         pygame.sprite.Sprite.__init__(self)
         self.black = (0,0,0)
         self.white = (255,255,255)
@@ -13,8 +15,8 @@ class Environment(pygame.sprite.Sprite):
         self.blue = (0,0,255)
         self.red = (255,0,0)
         self.yellow = (255,255,0)
-        self.height = dimentions[0]
-        self.width = dimentions[1]
+        self.height = dimensions[0]
+        self.width = dimensions[1]
         pygame.display.set_caption("env")
         self.map = pygame.display.set_mode((self.width, self.height))
 
@@ -29,11 +31,18 @@ class Environment(pygame.sprite.Sprite):
 
         self.map.blit(self.image, self.rect)
         self.robots = []
+        self.boxes = []
+        self.path = []
 
     def addRobot(self, position, imagePath):
         self.robots.append(Robot(position, imagePath))
 
+    def addBox(self, position, imagePath):
+        self.boxes.append(Box(position, imagePath))
+
+
     def refresh(self):
+        pygame.event.get()
         self.map.blit(self.image, self.rect)
         for robot in self.robots:
             robot.draw(self)
@@ -42,17 +51,22 @@ class Environment(pygame.sprite.Sprite):
         for robot in self.robots:
             robot.drawRays(self)
 
+        for box in self.boxes:
+            box.draw(self)
+
         ## Lines
             pygame.draw.line(self.map, self.red, (self.robots[0].x,self.robots[0].y), (self.robots[1].x,self.robots[1].y))
             pygame.draw.line(self.map, self.red, (self.robots[1].x,self.robots[1].y), (self.robots[2].x,self.robots[2].y))
             pygame.draw.line(self.map, self.red, (self.robots[2].x,self.robots[2].y), (self.robots[3].x,self.robots[3].y))
             pygame.draw.line(self.map, self.red, (self.robots[0].x,self.robots[0].y), (self.robots[3].x,self.robots[3].y))
 
-        
-
-
-
-
+    def move_box(self, target):
+        result = False
+        while result != True:
+            result = self.boxes[0].move_box_to_position(target)
+            self.refresh()
+            pygame.display.update()
+        return result
 
     def checkCollision(self):
         collisionrects = []
@@ -79,7 +93,7 @@ class Environment(pygame.sprite.Sprite):
         self.refresh()
         return terminating
     
-    def setManualPose(self, pose):
+    def setManualPose(self, pose, box_pose, angle):
         counter = 0
         for robot in self.robots:
             try:
@@ -87,5 +101,24 @@ class Environment(pygame.sprite.Sprite):
             except:
                 pass
             counter += 1
+
+        for box in self.boxes:
+            try:
+                box.setPose(box_pose[0], box_pose[1], angle)
+            except:
+                pass
+
+        pygame.display.update()
+        self.refresh()
+
+    def setManualPose_robot(self, pose):
+        counter = 0
+        for robot in self.robots:
+            try:
+                robot.setPose(pose[counter][0], pose[counter][1], pose[counter][2])
+            except:
+                pass
+            counter += 1
+
         pygame.display.update()
         self.refresh()
