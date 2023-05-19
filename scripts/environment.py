@@ -34,6 +34,12 @@ class Environment(pygame.sprite.Sprite):
         self.boxes = []
         self.path = []
 
+        self.trails = []
+        self.colors = [self.red, self.green,self.blue, self.yellow]
+        self.trail_length = 400
+        self.trail_draw_interval = 20
+        self.trail_point_size = 3
+
     def addRobot(self, position, imagePath):
         self.robots.append(Robot(position, imagePath))
 
@@ -54,11 +60,29 @@ class Environment(pygame.sprite.Sprite):
         for box in self.boxes:
             box.draw(self)
 
+        self.draw_trail(self.trails)
+
+
+
         ## Lines
             # pygame.draw.line(self.map, self.red, (self.robots[0].x,self.robots[0].y), (self.robots[1].x,self.robots[1].y))
             # pygame.draw.line(self.map, self.red, (self.robots[1].x,self.robots[1].y), (self.robots[2].x,self.robots[2].y))
             # pygame.draw.line(self.map, self.red, (self.robots[2].x,self.robots[2].y), (self.robots[3].x,self.robots[3].y))
             # pygame.draw.line(self.map, self.red, (self.robots[0].x,self.robots[0].y), (self.robots[3].x,self.robots[3].y))
+
+    def add_trail(self, trail):
+        self.trails.insert(0, trail)
+        if(len(self.trails) > self.trail_length):
+            self.trails.pop(-1)
+    
+    def clear_trail(self):
+        self.trails = []
+
+    def draw_trail(self, trail):
+        for pose_index, poses in enumerate(trail):
+            if pose_index % self.trail_draw_interval == 0:
+                for i, point in enumerate(poses):
+                    pygame.draw.rect(self.map,self.colors[i%4],(point[0], point[1], self.trail_point_size, self.trail_point_size),width=5) 
 
     def move_box(self, target):
         result = False

@@ -15,8 +15,9 @@ R = robotWidth
 env_width = 1920
 env_height = 1080
 
-vs_origin_x = -580
-vs_origin_y = 390
+vs_origin_x_init = -560
+vs_origin_y_init = 380
+leading_trail_length = 200
 
 
 def Position(x, y):
@@ -34,13 +35,13 @@ def InitEnv():
 def FourRobotsEnv():
     env = InitEnv()
 
-    env.addRobot(Position(vs_origin_x + 50, vs_origin_y + 50), robotImage)
-    env.addRobot(Position(vs_origin_x - 50, vs_origin_y + 50), robotImage)
+    env.addRobot(Position(vs_origin_x_init + 50, vs_origin_y_init + 50), robotImage)
+    env.addRobot(Position(vs_origin_x_init - 50, vs_origin_y_init + 50), robotImage)
     
-    env.addRobot(Position(vs_origin_x - 50, vs_origin_y - 50), robotImage)
-    env.addRobot(Position(vs_origin_x + 50, vs_origin_y - 50), robotImage)
+    env.addRobot(Position(vs_origin_x_init - 50, vs_origin_y_init - 50), robotImage)
+    env.addRobot(Position(vs_origin_x_init + 50, vs_origin_y_init - 50), robotImage)
 
-    env.addBox(Position(-1000,vs_origin_y), 'images/box_1.png')
+    env.addBox(Position(-1000,vs_origin_y_init), 'images/box_1.png')
 
     return env
 
@@ -49,11 +50,12 @@ def main():
     r = 0
     load = True
     running = True
-    vs_origin_x = -580
-    vs_origin_y = 390
+    vs_origin_x = vs_origin_x_init
+    vs_origin_y = vs_origin_y_init
     env = FourRobotsEnv()      
 
     if load == True:
+        env.clear_trail()
         target = Position(vs_origin_x, vs_origin_y)
         result = env.move_box(target)
 
@@ -61,13 +63,20 @@ def main():
         load = False
 
         Poses, x, y, angle, vs_origin_x, vs_origin_y = Controller()  
-        for poses,Pose in enumerate(Poses):
-            env.setManualPose(Pose, (x[poses] + vs_origin_x, y[poses] + vs_origin_y), angle[poses])
+
+        for i in range(0 , leading_trail_length):
+            env.add_trail(Poses[i])
+
+        for pose_index, Pose in enumerate(Poses):
+            env.setManualPose(Pose, (x[pose_index] + vs_origin_x, y[pose_index] + vs_origin_y), angle[pose_index])            
+            if pose_index + leading_trail_length < len(Poses):
+                env.add_trail(Poses[pose_index + leading_trail_length])
 
         unload = True
         result = False
     
     if unload == True:
+        env.clear_trail()
         target = Position(1200, -390)
         result = env.move_box(target)
 
@@ -78,6 +87,12 @@ def main():
     # some trickery to make the robots drive back to their original positions
     # ================================================================
     flipped_Poses = np.flip(Poses, 0)
+
+    # invert the angle
+    for poses in flipped_Poses:
+        for robot_pose in poses:
+            robot_pose[2] = robot_pose[2] + math.pi
+
 
     offset_robot_0 = 600
     offset_robot_1 = 500
@@ -122,12 +137,15 @@ def main():
 
 
         env.setManualPose_robot(_poses)
+        # if(pose_index + leading_trail_length < len(flipped_Poses)):
+        #     env.add_trail([flipped_Poses[pose_index_3 + leading_trail_length ][3], flipped_Poses[pose_index_2 + leading_trail_length ][2], flipped_Poses[pose_index_1 + leading_trail_length ][1], flipped_Poses[pose_index_0 + leading_trail_length ][0]])
+        # else:
+        #     env.add_trail([flipped_Poses[pose_index_3][3], flipped_Poses[pose_index_2][2], flipped_Poses[pose_index_1][1], flipped_Poses[pose_index_0][0]])
 
     # ================================================================
 
-    # for i in np.flip(Poses, 0):
-    #     env.setManualPose_robot(i)
-        
+    
+    env.clear_trail()
     time.sleep(2)
 
 if __name__ == "__main__":
