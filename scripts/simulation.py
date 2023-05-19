@@ -45,45 +45,31 @@ def FourRobotsEnv():
 
     return env
 
-
-def main():
-    r = 0
-    load = True
-    running = True
-    vs_origin_x = vs_origin_x_init
-    vs_origin_y = vs_origin_y_init
+loop_delay_seconds = 1
+def main(Poses, x, y, angle, vs_origin_x, vs_origin_y):
+    time.sleep(loop_delay_seconds)
     env = FourRobotsEnv()      
 
-    if load == True:
-        env.clear_trail()
-        target = Position(vs_origin_x, vs_origin_y)
-        result = env.move_box(target)
+    # Loading animation
+    env.clear_trail()
+    target = Position(vs_origin_x_init, vs_origin_y_init)
+    env.move_box(target)
 
-    if result == True:
-        load = False
+    # Driving to goal
+    for i in range(0 , leading_trail_length):
+        env.add_pose_to_trail(Poses[i])
 
-        Poses, x, y, angle, vs_origin_x, vs_origin_y = Controller()  
+    for pose_index, Pose in enumerate(Poses):
+        env.setManualPose(Pose, (x[pose_index] + vs_origin_x, y[pose_index] + vs_origin_y), angle[pose_index])  
+                    
+        if pose_index + leading_trail_length < len(Poses):
+            env.add_pose_to_trail(Poses[pose_index + leading_trail_length])
 
-        for i in range(0 , leading_trail_length):
-            env.add_trail(Poses[i])
 
-        for pose_index, Pose in enumerate(Poses):
-            env.setManualPose(Pose, (x[pose_index] + vs_origin_x, y[pose_index] + vs_origin_y), angle[pose_index])  
-                      
-            if pose_index + leading_trail_length < len(Poses):
-                env.add_trail(Poses[pose_index + leading_trail_length])
 
-        unload = True
-        result = False
-    
-    if unload == True:
-        env.clear_trail()
-        target = Position(1200, -390)
-        result = env.move_box(target)
-
-        if result == True:
-            unload = False
-
+    env.clear_trail()
+    target = Position(1200, -vs_origin_y_init)
+    env.move_box(target)
 
     # some trickery to make the robots drive back to their original positions
     # ================================================================
@@ -95,14 +81,12 @@ def main():
             robot_pose[2] = robot_pose[2] + math.pi
 
 
-    offset_robot_0 = 600
-    offset_robot_1 = 500
-    offset_robot_2 = 100
+    offset_robot_0 = 900
+    offset_robot_1 = 600
+    offset_robot_2 = 150
     offset_robot_3 = 0
 
-    for pose_index in range(0, len(flipped_Poses) + offset_robot_0):
-
-
+    for pose_index in range(0, len(flipped_Poses) + offset_robot_0 + leading_trail_length):
         if (pose_index > len(flipped_Poses) - 1):
             pose_index_3 = 4748
         else:
@@ -136,25 +120,35 @@ def main():
         except:
             print(f'index: {pose_index}, index_0: {pose_index_0}, index_1: {pose_index_1}, index_2: {pose_index_2}, pose_index_3: {pose_index_3}')
 
+        if pose_index % 2 == 0:
+            env.setManualPose_robot(_poses)
 
-        env.setManualPose_robot(_poses)
+        # add pose to the trail when the robots are driving back to their original positions
+        if(pose_index + leading_trail_length < len(flipped_Poses) - 3):
+            env.add_pose_to_trail([flipped_Poses[pose_index_3 + leading_trail_length ][3], flipped_Poses[pose_index_2 + leading_trail_length ][2], flipped_Poses[pose_index_1 + leading_trail_length ][1], flipped_Poses[pose_index_0 + leading_trail_length ][0]])
+        
+        elif(pose_index_0 + leading_trail_length > len(flipped_Poses) - offset_robot_0 - 1 and pose_index_1 + leading_trail_length < len(flipped_Poses) - offset_robot_1 - 1 and pose_index_2 + leading_trail_length < len(flipped_Poses) - offset_robot_2 - 1):
+            env.add_pose_to_trail([flipped_Poses[pose_index_3 + leading_trail_length - 1][3], flipped_Poses[pose_index_2 + leading_trail_length  - 1][2], flipped_Poses[pose_index_1 + leading_trail_length - 1][1], flipped_Poses[pose_index_0 - 1][0]])
+        
+        elif(pose_index_1 + leading_trail_length > len(flipped_Poses) - offset_robot_1 - 1 and pose_index_2 + leading_trail_length < len(flipped_Poses) - offset_robot_2 - 1):
+            env.add_pose_to_trail([flipped_Poses[pose_index_3 + leading_trail_length - 1][3], flipped_Poses[pose_index_2 + leading_trail_length  - 1][2], flipped_Poses[pose_index_1 - 1][1], flipped_Poses[pose_index_0][0]])
+        
+        elif(pose_index_2 + leading_trail_length > len(flipped_Poses) - offset_robot_2 - 1 and pose_index_1 + leading_trail_length < len(flipped_Poses) - offset_robot_1 - 1 and pose_index_0 + leading_trail_length < len(flipped_Poses) - offset_robot_0 - 1):
+            env.add_pose_to_trail([flipped_Poses[pose_index_3 + leading_trail_length - 1][3], flipped_Poses[pose_index_2 - 1][2], flipped_Poses[pose_index_1][1], flipped_Poses[pose_index_0][0]])
 
-        # display the trail when the robots are driving back to their original positions
-        # if(pose_index + leading_trail_length < len(flipped_Poses)):
-        #     env.add_trail([flipped_Poses[pose_index_3 + leading_trail_length ][3], flipped_Poses[pose_index_2 + leading_trail_length ][2], flipped_Poses[pose_index_1 + leading_trail_length ][1], flipped_Poses[pose_index_0 + leading_trail_length ][0]])
-        # else:
-        #     env.add_trail([flipped_Poses[pose_index_3][3], flipped_Poses[pose_index_2][2], flipped_Poses[pose_index_1][1], flipped_Poses[pose_index_0][0]])
+        else:
+            env.add_pose_to_trail([flipped_Poses[pose_index_3][3], flipped_Poses[pose_index_2][2], flipped_Poses[pose_index_1][1], flipped_Poses[pose_index_0][0]])
 
     # ================================================================
 
-    
     env.clear_trail()
-    time.sleep(2)
 
 if __name__ == "__main__":
+    Poses, x, y, angle, vs_origin_x, vs_origin_y = Controller()
     running = True
     while (running):
-        main()
+
+        main(Poses, x, y, angle, vs_origin_x, vs_origin_y)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
