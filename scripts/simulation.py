@@ -68,7 +68,8 @@ def main():
             env.add_trail(Poses[i])
 
         for pose_index, Pose in enumerate(Poses):
-            env.setManualPose(Pose, (x[pose_index] + vs_origin_x, y[pose_index] + vs_origin_y), angle[pose_index])            
+            env.setManualPose(Pose, (x[pose_index] + vs_origin_x, y[pose_index] + vs_origin_y), angle[pose_index])  
+                      
             if pose_index + leading_trail_length < len(Poses):
                 env.add_trail(Poses[pose_index + leading_trail_length])
 
@@ -137,6 +138,8 @@ def main():
 
 
         env.setManualPose_robot(_poses)
+
+        # display the trail when the robots are driving back to their original positions
         # if(pose_index + leading_trail_length < len(flipped_Poses)):
         #     env.add_trail([flipped_Poses[pose_index_3 + leading_trail_length ][3], flipped_Poses[pose_index_2 + leading_trail_length ][2], flipped_Poses[pose_index_1 + leading_trail_length ][1], flipped_Poses[pose_index_0 + leading_trail_length ][0]])
         # else:
