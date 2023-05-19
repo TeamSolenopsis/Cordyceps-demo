@@ -7,6 +7,7 @@ from environment import Environment
 from controller import Controller
 import time
 
+loop_interval_seconds = 1
 robotImage = 'images/robot.png'
 metersToPixels = 3779.52
 robotwidthPixels = 50
@@ -46,12 +47,8 @@ def FourRobotsEnv():
 
     return env
 
-
-loop_delay_seconds = 1
-
-
 def main(Poses, x, y, angle, vs_origin_x, vs_origin_y):
-    time.sleep(loop_delay_seconds)
+    time.sleep(loop_interval_seconds)
     env = FourRobotsEnv()
 
     # Loading animation
@@ -71,6 +68,8 @@ def main(Poses, x, y, angle, vs_origin_x, vs_origin_y):
             env.add_pose_to_trail(Poses[pose_index + leading_trail_length])
 
     env.clear_trail()
+
+    # Unloading animation
     target = Position(1200, -vs_origin_y_init)
     env.move_box(target)
 
@@ -153,9 +152,8 @@ def main(Poses, x, y, angle, vs_origin_x, vs_origin_y):
                 flipped_Poses[pose_index_0][0]
             ])
 
-    # ================================================================
-
     env.clear_trail()
+    # ================================================================
 
 
 if __name__ == "__main__":
