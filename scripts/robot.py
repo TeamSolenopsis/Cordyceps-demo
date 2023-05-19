@@ -15,6 +15,7 @@ class Robot(pygame.sprite.Sprite):
         self.vel = 0.0 * self.m2p
         self.ver = 0.0 * self.m2p
         self.image = pygame.image.load(robotImg)
+        self.image = pygame.transform.rotozoom(self.image, 90, 1)
         self.width = self.image.get_width() / self.m2p
         self.mask = pygame.mask.from_surface(self.image)
         self.rotated = self.image
@@ -47,7 +48,7 @@ class Robot(pygame.sprite.Sprite):
         self.y -= ((self.vel+self.ver)/2) * math.sin(self.theta) * dt
         self.theta += (self.ver - self.vel) / self.width * dt
 
-        self.rotated = pygame.transform.rotozoom(self.image, math.degrees(self.theta), 1)
+        self.rotated = pygame.transform.rotozoom(self.image, math.degrees(self.theta) - 90, 1)
         self.rect = self.rotated.get_rect(center = (self.x, self.y))
 
         self.lidar.setPosition(self.x, self.y)
@@ -58,7 +59,7 @@ class Robot(pygame.sprite.Sprite):
         self.x = X
         self.y = Y
         self.theta = Theta
-        self.rotated = pygame.transform.rotozoom(self.image, math.degrees(self.theta), 1)
+        self.rotated = pygame.transform.rotozoom(self.image, math.degrees(self.theta) - 90, 1)
         self.rect = self.rotated.get_rect(center = (self.x, self.y))
         self.lidar.setPosition(self.x, self.y)
 
