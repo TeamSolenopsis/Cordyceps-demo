@@ -74,7 +74,7 @@ class Environment(pygame.sprite.Sprite):
 
     def add_pose_to_trail(self, pose_to_add):
         self.trails.insert(0, pose_to_add)
-        if(len(self.trails) > self.max_trail_length):
+        while(len(self.trails) > self.max_trail_length):
             self.trails.pop(-1)
 
     def draw_trail(self):
